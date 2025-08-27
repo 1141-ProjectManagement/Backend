@@ -1,5 +1,6 @@
 package edu.fcu.cs1133.controller;
 
+import edu.fcu.cs1133.Service.AdministratorService;
 import edu.fcu.cs1133.Service.MyUserDetailsService;
 import edu.fcu.cs1133.Service.StudentService;
 import edu.fcu.cs1133.Service.TeacherService;
@@ -39,6 +40,9 @@ public class AuthenticationController {
     @Autowired
     private TeacherService teacherService;
 
+    @Autowired
+    private AdministratorService administratorService;
+
     @Value("${security.password.enabled:true}")
     private boolean passwordEnabled;
 
@@ -62,6 +66,14 @@ public class AuthenticationController {
 
     @GetMapping("/users")
     public List<UserDto> getAllUsersForLogin() {
+        List<UserDto> administrators = administratorService.getAllAdministrators().stream()
+                .filter(a -> a.getUsername() != null && !a.getUsername().isEmpty())
+                .map(a -> {
+                    String role = a.getRole() != null ? a.getRole().name() : "N/A";
+                    return new UserDto(a.getAdminId(), a.getUsername(), a.getName(), role);
+                })
+                .collect(Collectors.toList());
+
         List<UserDto> teachers = teacherService.getAllTeachers().stream()
                 .filter(t -> t.getUsername() != null && !t.getUsername().isEmpty())
                 .map(t -> {
@@ -79,7 +91,7 @@ public class AuthenticationController {
                 })
                 .collect(Collectors.toList());
 
-        return Stream.concat(teachers.stream(), students.stream()).collect(Collectors.toList());
+        return Stream.of(administrators, teachers, students).flatMap(List::stream).collect(Collectors.toList());
     }
 
     @PostMapping("/login-as/{username}")
@@ -95,9 +107,12 @@ public class AuthenticationController {
         if ("STUDENT".equals(request.getRole())) {
             userDetails = studentService.getStudentById(request.getId())
                     .orElseThrow(() -> new RuntimeException("Student not found"));
-        } else if ("TEACHER".equals(request.getRole()) || "ADMIN".equals(request.getRole())) {
+        } else if ("TEACHER".equals(request.getRole())) {
             userDetails = teacherService.getTeacherById(request.getId())
                     .orElseThrow(() -> new RuntimeException("Teacher not found"));
+        } else if ("ADMIN".equals(request.getRole())) {
+            userDetails = administratorService.getAdministratorById(request.getId())
+                    .orElseThrow(() -> new RuntimeException("Administrator not found"));
         } else {
             throw new RuntimeException("Invalid role");
         }

@@ -1,5 +1,6 @@
 package edu.fcu.cs1133.Service;
 
+import edu.fcu.cs1133.repository.AdministratorRepository;
 import edu.fcu.cs1133.repository.StudentsRepository;
 import edu.fcu.cs1133.repository.TeachersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +18,17 @@ public class MyUserDetailsService implements UserDetailsService {
     @Autowired
     private StudentsRepository studentsRepository;
 
+    @Autowired
+    private AdministratorRepository administratorRepository;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return teachersRepository.findByUsername(username)
+        return administratorRepository.findByUsername(username)
                 .map(UserDetails.class::cast)
-                .orElseGet(() -> studentsRepository.findByUsername(username)
+                .orElseGet(() -> teachersRepository.findByUsername(username)
                         .map(UserDetails.class::cast)
-                        .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username)));
+                        .orElseGet(() -> studentsRepository.findByUsername(username)
+                                .map(UserDetails.class::cast)
+                                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username))));
     }
 }

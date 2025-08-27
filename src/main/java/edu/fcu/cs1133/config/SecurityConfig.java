@@ -45,6 +45,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/login", "/api/users", "/api/login-as/**", "/api/login-as-id", "/hello").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // for swagger
+                .requestMatchers("/api/students/**", "/api/teachers/**", "/api/courses/**", "/api/enrollments/**", "/api/administrators/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
