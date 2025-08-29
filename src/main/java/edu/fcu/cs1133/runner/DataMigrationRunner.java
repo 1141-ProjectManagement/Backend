@@ -5,24 +5,19 @@ import edu.fcu.cs1133.model.Student;
 import edu.fcu.cs1133.model.Teacher;
 import edu.fcu.cs1133.repository.StudentsRepository;
 import edu.fcu.cs1133.repository.TeachersRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class DataMigrationRunner implements CommandLineRunner {
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @Autowired
     private StudentsRepository studentsRepository;
@@ -36,18 +31,8 @@ public class DataMigrationRunner implements CommandLineRunner {
     private final String DEFAULT_PASSWORD = "password123";
 
     @Override
-    @Transactional
     public void run(String... args) throws Exception {
-        fixRoles();
         migrateUsers();
-    }
-
-    private void fixRoles() {
-        System.out.println("Fixing database roles...");
-        entityManager.createNativeQuery("UPDATE Student SET role = 'STUDENT' WHERE role = 'student'").executeUpdate();
-        entityManager.createNativeQuery("UPDATE Teacher SET role = 'TEACHER' WHERE role = 'teacher'").executeUpdate();
-        entityManager.createNativeQuery("UPDATE Teacher SET role = 'ADMIN' WHERE role = 'admin'").executeUpdate();
-        System.out.println("Database roles fixed.");
     }
 
     private void migrateUsers() {
