@@ -68,4 +68,19 @@ public class StudentController {
         studentService.deleteStudent(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/search/firstname")
+    public List<Student> getStudentsByFirstName(@RequestParam String firstName) {
+        return studentService.getStudentsByFirstName(firstName);
+    }
+
+    @GetMapping("/search/lastname")
+    public List<Student> getStudentsByLastName(@RequestParam String lastName) {
+        return studentService.getStudentsByLastName(lastName);
+    }
+
+    @GetMapping("/search/fullname")
+    public List<Student> getStudentsByLastNameAndFirstName(@RequestParam String lastName, @RequestParam String firstName) {
+        return studentService.getStudentsByLastNameAndFirstName(lastName, firstName);
+    }
 }

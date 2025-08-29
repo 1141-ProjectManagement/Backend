@@ -42,4 +42,16 @@ public class StudentService {
     public void deleteStudent(int id) {
         studentsRepository.deleteById(id);
     }
+
+    public List<Student> getStudentsByFirstName(String firstName) {
+        return studentsRepository.findByFirstName(firstName);
+    }
+
+    public List<Student> getStudentsByLastName(String lastName) {
+        return studentsRepository.findByLastName(lastName);
+    }
+
+    public List<Student> getStudentsByLastNameAndFirstName(String lastName, String firstName) {
+        return studentsRepository.findByLastNameAndFirstName(lastName, firstName);
+    }
 }
