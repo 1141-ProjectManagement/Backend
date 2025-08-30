@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class CourseService {
@@ -31,15 +32,15 @@ public class CourseService {
    * @param studentId 執行選課的學生 User ID
    * @param courseId  要選修的課程 ID
    */
-  @Transactional // 關鍵！此註解確保整個方法在一個事務中執行。
-  // 如果中途發生任何 RuntimeException，所有資料庫操作都會自動回滾。
+  @Transactional
   public void enrollStudentInCourse(Integer studentId, Integer courseId) {
     // 業務規則 1: 驗證學生是否存在
     User student = userRepository.findById(studentId)
         .orElseThrow(() -> new ResourceNotFoundException("User", "id", studentId));
 
     // 業務規則 2: 驗證該使用者是否為學生角色
-    if (!"STUDENT".equals(student.getRole().getRoleName())) {
+    // 這邊的檢查應該基於權限，但為求簡化暫時保留
+    if (!student.getRole().getRoleName().equals("Student")) { // Role name from DB is "Student"
       throw new BadRequestException("User is not a student and cannot enroll in courses.");
     }
 
@@ -59,11 +60,27 @@ public class CourseService {
     enrollment.setEnrollmentDate(LocalDate.now());
 
     enrollmentRepository.save(enrollment);
-
-    // 未來的擴充：可以在這裡更新學生的已修學分、檢查課程是否滿員等更複雜的邏輯。
   }
 
-  // 可以在此添加其他課程相關的服務，例如：
-  // public List<Course> getAllAvailableCourses() { ... }
-  // public Course createCourse(CourseCreationRequest request) { ... }
+  /**
+   * 獲取所有課程列表
+   * @return 課程列表
+   */
+  @Transactional(readOnly = true)
+  public List<Course> getAllCourses() {
+    return courseRepository.findAll();
+  }
+
+  /**
+   * 根據 ID 獲取單一課程
+   * @param courseId 課程 ID
+   * @return 課程
+   */
+  @Transactional(readOnly = true)
+  public Course getCourseById(Integer courseId) {
+    return courseRepository.findById(courseId)
+        .orElseThrow(() -> new ResourceNotFoundException("Course", "id", courseId));
+  }
+
+  // TODO: 增加 createCourse(CourseCreationDto dto), updateCourse(Integer id, CourseUpdateDto dto) 和 deleteCourse(Integer id) 方法
 }

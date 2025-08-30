@@ -1,8 +1,7 @@
 package edu.fcu.cs1133.controller;
 
-// ... imports (AuthenticationManager, SecurityContextHolder, etc.)
-import edu.fcu.cs1133.payload.request.LoginRequest;
-import edu.fcu.cs1133.payload.response.JwtAuthenticationResponse;
+import edu.fcu.cs1133.payload.JwtAuthenticationResponse;
+import edu.fcu.cs1133.payload.LoginRequest;
 import edu.fcu.cs1133.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

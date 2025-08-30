@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-class EnrollmentId implements Serializable {
+public class EnrollmentId implements Serializable {
   @Column(name = "student_id")
   private Integer studentId;
   @Column(name = "course_id")
@@ -33,12 +33,3 @@ class EnrollmentId implements Serializable {
     return Objects.hash(studentId, courseId);
   }
 }
-public LocalDate getLastLogin() { return lastLogin; }
-public void setLastLogin(LocalDate lastLogin) { this.lastLogin = lastLogin;
-}
-public Boolean getIsActive() { return isActive; }
-public void setIsActive(Boolean isActive) { this.isActive = isActive;
-}
-}
-// Compare this snippet from src/main/java/edu/fcu/cs1133/model/Enrollment.java:
-// package edu.fcu.cs1133.model;

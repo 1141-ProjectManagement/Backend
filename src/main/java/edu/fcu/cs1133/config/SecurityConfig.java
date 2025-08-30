@@ -1,6 +1,6 @@
 package edu.fcu.cs1133.config;
 
-// ... imports (HttpSecurity, PasswordEncoder, AuthenticationManager, etc.)
+import edu.fcu.cs1133.Security.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,8 +44,8 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
         .csrf(csrf -> csrf.disable()) // 禁用 CSRF，因為我們使用 JWT
-        .exceptionHandling(...) // 配置異常處理
-            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 設置為無狀態 Session
+        // .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+        .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 設置為無狀態 Session
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/auth/**").permitAll() // 允許所有對 /api/auth/** 的請求
             .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // 允許 Swagger

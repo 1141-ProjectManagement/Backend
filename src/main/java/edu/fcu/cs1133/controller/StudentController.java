@@ -1,7 +1,9 @@
 package edu.fcu.cs1133.controller;
 
-import edu.fcu.cs1133.payload.response.EnrollmentDto;
+import edu.fcu.cs1133.model.StudentProfile;
+import edu.fcu.cs1133.payload.EnrollmentDto;
 import edu.fcu.cs1133.security.UserPrincipal;
+import edu.fcu.cs1133.service.ProfileService;
 import edu.fcu.cs1133.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +22,25 @@ public class StudentController {
   @Autowired
   private StudentService studentService;
 
+  @Autowired
+  private ProfileService profileService;
+
   @GetMapping("/me/enrollments")
-  @PreAuthorize("hasRole('STUDENT')") // <-- 端點安全：只有 STUDENT 角色可以訪問
+  @PreAuthorize("hasAuthority('grade.view.own')") // <-- 端點安全：只有擁有 'grade.view.own' 權限的使用者可以訪問
   public ResponseEntity<List<EnrollmentDto>> getMyEnrollments(
       @AuthenticationPrincipal UserPrincipal currentUser) { // <-- 注入當前登入使用者
 
     List<EnrollmentDto> enrollments = studentService.getMyEnrollments(currentUser);
     return ResponseEntity.ok(enrollments);
   }
+
+  @GetMapping("/me/profile")
+  @PreAuthorize("hasAuthority('profile.view.own')")
+  public ResponseEntity<StudentProfile> getMyProfile(
+      @AuthenticationPrincipal UserPrincipal currentUser) {
+    StudentProfile profile = profileService.getStudentProfile(currentUser.getId());
+    return ResponseEntity.ok(profile);
+  }
+
+  // TODO: Add endpoint for updating profile
 }

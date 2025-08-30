@@ -1,6 +1,7 @@
 package edu.fcu.cs1133.service;
 
-import edu.fcu.cs1133.dto.EnrollmentDto; // 我們將建立一個 DTO
+import edu.fcu.cs1133.payload.EnrollmentDto;
+import edu.fcu.cs1133.model.Enrollment;
 import edu.fcu.cs1133.exception.ResourceNotFoundException;
 import edu.fcu.cs1133.model.User;
 import edu.fcu.cs1133.repository.EnrollmentRepository;

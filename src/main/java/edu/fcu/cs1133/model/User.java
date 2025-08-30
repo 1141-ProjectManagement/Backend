@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import edu.fcu.cs1133.model.Role;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -35,8 +36,11 @@ public class User {
 //      is_active
   @Column(name = "email", unique = true, nullable = false)
   private String email;
-  @Column(name = "role_id", nullable = false)
-  private Integer roleId;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "role_id", nullable = false)
+  private Role role;
+
   @Column(name = "created_at", nullable = false)
   private LocalDate createdAt;
   @Column(name = "last_login")
@@ -60,14 +64,13 @@ public class User {
   public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
   public String getEmail() { return email; }
   public void setEmail(String email) { this.email = email; }
-  public Integer getRoleId() { return roleId; }
-  public void setRoleId(Integer roleId) { this.roleId = roleId; }
+  public Role getRole() { return role; }
+  public void setRole(Role role) { this.role = role; }
   public LocalDate getCreatedAt() { return createdAt; }
-  public void setCreatedAt(LocalDate createdAt) { this.createdAt = createdAt;
-  }
+  public void setCreatedAt(LocalDate createdAt) { this.createdAt = createdAt; }
   public LocalDate getLastLogin() { return lastLogin; }
-  public void setLastLogin(LocalDate lastLogin) { this.lastLogin = lastLogin;
-  }
+  public void setLastLogin(LocalDate lastLogin) { this.lastLogin = lastLogin; }
   public Boolean getIsActive() { return isActive; }
   public void setIsActive(Boolean isActive) { this.isActive = isActive; }
   // --- End of Getters and Setters ---
+}

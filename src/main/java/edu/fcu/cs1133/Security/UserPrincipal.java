@@ -49,16 +49,30 @@ public class UserPrincipal implements UserDetails {
     return password;
   }
 
-  // ... isAccountNonExpired, isAccountNonLocked, etc. (通常返回 true)
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return authorities;
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true; // Or map this to a field in your User entity
+  }
 
   // equals() and hashCode() a good practice to implement
-}
-
-// In CustomUserDetailsService.java
-@Override
-public UserDetails loadUserByUsername(String officialId) throws UsernameNotFoundException {
-  User user = userRepository.findByOfficialId(officialId)
-      .orElseThrow(() -> new UsernameNotFoundException("..."));
-
-  return UserPrincipal.create(user); // <-- 返回我們自訂的 Principal
 }
