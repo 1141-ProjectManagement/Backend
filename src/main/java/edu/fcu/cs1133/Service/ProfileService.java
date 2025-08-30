@@ -19,6 +19,12 @@ public class ProfileService {
     @Autowired
     private StudentProfileRepository studentProfileRepository;
 
+    @Autowired
+    private edu.fcu.cs1133.repository.TeacherProfileRepository teacherProfileRepository;
+
+    @Autowired
+    private edu.fcu.cs1133.repository.AdministratorProfileRepository administratorProfileRepository;
+
     // Add other profile repositories...
 
     @Transactional(readOnly = true)
@@ -28,7 +34,7 @@ public class ProfileService {
         return convertToDto(profile);
     }
 
-    private StudentProfileDto convertToDto(StudentProfile profile) {
+    public StudentProfileDto convertToDto(StudentProfile profile) {
         StudentProfileDto dto = new StudentProfileDto();
         User user = profile.getUser(); // This is safe within the transaction
 
@@ -45,5 +51,48 @@ public class ProfileService {
     }
 
     // TODO: Add methods to get other profiles (Teacher, Admin)
-    // TODO: Add methods to update profiles, which will take DTOs as input
+
+    @Transactional
+    public StudentProfileDto updateStudentProfile(Integer userId, edu.fcu.cs1133.payload.ProfileUpdateDto profileUpdateDto) {
+        StudentProfile profile = studentProfileRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("StudentProfile", "userId", userId));
+
+        profile.setFirstName(profileUpdateDto.getFirstName());
+        profile.setLastName(profileUpdateDto.getLastName());
+        profile.setDateOfBirth(profileUpdateDto.getDateOfBirth());
+
+        StudentProfile updatedProfile = studentProfileRepository.save(profile);
+        return convertToDto(updatedProfile);
+    }
+
+    @Transactional
+    public void updateTeacherProfile(Integer userId, edu.fcu.cs1133.payload.ProfileUpdateDto profileUpdateDto) {
+        edu.fcu.cs1133.model.TeacherProfile profile = teacherProfileRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("TeacherProfile", "userId", userId));
+
+        // Assuming fullName is constructed from firstName and lastName
+        String fullName = (profileUpdateDto.getFirstName() + " " + profileUpdateDto.getLastName()).trim();
+        if (fullName.isEmpty()) {
+            fullName = profileUpdateDto.getFullName();
+        }
+        profile.setFullName(fullName);
+        profile.setAge(profileUpdateDto.getAge());
+
+        teacherProfileRepository.save(profile);
+    }
+
+    @Transactional
+    public void updateAdminProfile(Integer userId, edu.fcu.cs1133.payload.ProfileUpdateDto profileUpdateDto) {
+        edu.fcu.cs1133.model.AdministratorProfile profile = administratorProfileRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("AdministratorProfile", "userId", userId));
+
+        // Assuming fullName is constructed from firstName and lastName
+        String fullName = (profileUpdateDto.getFirstName() + " " + profileUpdateDto.getLastName()).trim();
+        if (fullName.isEmpty()) {
+            fullName = profileUpdateDto.getFullName();
+        }
+        profile.setFullName(fullName);
+
+        administratorProfileRepository.save(profile);
+    }
 }

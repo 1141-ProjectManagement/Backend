@@ -6,18 +6,23 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+import edu.fcu.cs1133.model.Role;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
+    Optional<User> findByOfficialId(String officialId);
 
-  /**
-   * 根據官方 ID（學號/工號）查詢使用者。
-   * 方法名從 findByUsername 更改為 findByOfficialId，
-   * Spring Data JPA 會自動為您實現正確的查詢。
-   *
-   * @param officialId 官方 ID
-   * @return 包含 User 的 Optional 物件
-   */
-  Optional<User> findByOfficialId(String officialId); // <--- 關鍵變更
+    Boolean existsByOfficialId(String officialId);
+
+    Boolean existsByEmail(String email);
+
+    List<User> findByRole(Role role);
+}
 
   boolean existsByOfficialId(String officialId); // <--- 建議新增
 

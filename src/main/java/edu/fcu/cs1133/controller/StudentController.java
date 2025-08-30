@@ -25,22 +25,6 @@ public class StudentController {
   @Autowired
   private ProfileService profileService;
 
-  @GetMapping("/me/enrollments")
-  @PreAuthorize("hasAuthority('grade.view.own')")
-  public ResponseEntity<List<EnrollmentDto>> getMyEnrollments(
-      @AuthenticationPrincipal UserPrincipal currentUser) {
+  // Methods moved to UserController
 
-    List<EnrollmentDto> enrollments = studentService.getMyEnrollments(currentUser);
-    return ResponseEntity.ok(enrollments);
-  }
-
-  @GetMapping("/me/profile")
-  @PreAuthorize("hasAuthority('profile.view.own')")
-  public ResponseEntity<StudentProfileDto> getMyProfile(
-      @AuthenticationPrincipal UserPrincipal currentUser) {
-    StudentProfileDto profile = profileService.getStudentProfile(currentUser.getId());
-    return ResponseEntity.ok(profile);
-  }
-
-  // TODO: Add endpoint for updating profile
 }

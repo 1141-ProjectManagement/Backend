@@ -5,9 +5,11 @@ import edu.fcu.cs1133.exception.ResourceNotFoundException;
 import edu.fcu.cs1133.model.Course;
 import edu.fcu.cs1133.model.Enrollment;
 import edu.fcu.cs1133.model.User;
+import edu.fcu.cs1133.payload.CourseCreationDto;
 import edu.fcu.cs1133.payload.CourseDto;
 import edu.fcu.cs1133.repository.CourseRepository;
 import edu.fcu.cs1133.repository.EnrollmentRepository;
+import edu.fcu.cs1133.repository.TeacherProfileRepository;
 import edu.fcu.cs1133.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,9 @@ public class CourseService {
 
   @Autowired
   private EnrollmentRepository enrollmentRepository;
+
+  @Autowired
+  private TeacherProfileRepository teacherProfileRepository;
 
   @Transactional
   public void enrollStudentInCourse(Integer studentId, Integer courseId) {
@@ -67,6 +72,52 @@ public class CourseService {
     return convertToDto(course);
   }
 
+  @Transactional
+  public CourseDto createCourse(CourseCreationDto courseDto) {
+      Course course = new Course();
+      course.setCourseName(courseDto.getCourseName());
+      course.setCourseDescription(courseDto.getCourseDescription());
+      course.setCredits(courseDto.getCredits());
+
+      if (courseDto.getTeacherId() != null) {
+          edu.fcu.cs1133.model.TeacherProfile teacher = teacherProfileRepository.findById(courseDto.getTeacherId())
+                  .orElseThrow(() -> new ResourceNotFoundException("TeacherProfile", "id", courseDto.getTeacherId()));
+          course.setTeacher(teacher);
+      }
+
+      Course savedCourse = courseRepository.save(course);
+      return convertToDto(savedCourse);
+  }
+
+  @Transactional
+  public CourseDto updateCourse(Integer courseId, CourseCreationDto courseDto) {
+      Course course = courseRepository.findById(courseId)
+              .orElseThrow(() -> new ResourceNotFoundException("Course", "id", courseId));
+
+      course.setCourseName(courseDto.getCourseName());
+      course.setCourseDescription(courseDto.getCourseDescription());
+      course.setCredits(courseDto.getCredits());
+
+      if (courseDto.getTeacherId() != null) {
+          edu.fcu.cs1133.model.TeacherProfile teacher = teacherProfileRepository.findById(courseDto.getTeacherId())
+                  .orElseThrow(() -> new ResourceNotFoundException("TeacherProfile", "id", courseDto.getTeacherId()));
+          course.setTeacher(teacher);
+      } else {
+          course.setTeacher(null);
+      }
+
+      Course updatedCourse = courseRepository.save(course);
+      return convertToDto(updatedCourse);
+  }
+
+  @Transactional
+  public void deleteCourse(Integer courseId) {
+      if (!courseRepository.existsById(courseId)) {
+          throw new ResourceNotFoundException("Course", "id", courseId);
+      }
+      courseRepository.deleteById(courseId);
+  }
+
   private CourseDto convertToDto(Course course) {
       CourseDto dto = new CourseDto();
       dto.setId(course.getCourseId());
@@ -78,6 +129,4 @@ public class CourseService {
       }
       return dto;
   }
-
-  // TODO: 增加 createCourse(CourseCreationDto dto), updateCourse(Integer id, CourseUpdateDto dto) 和 deleteCourse(Integer id) 方法
 }

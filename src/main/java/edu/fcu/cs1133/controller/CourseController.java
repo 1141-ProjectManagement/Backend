@@ -1,10 +1,12 @@
 package edu.fcu.cs1133.controller;
 
+import edu.fcu.cs1133.payload.CourseCreationDto;
 import edu.fcu.cs1133.payload.CourseDto;
 import edu.fcu.cs1133.payload.MessageResponse;
 import edu.fcu.cs1133.security.UserPrincipal;
 import edu.fcu.cs1133.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -44,5 +46,24 @@ public class CourseController {
     return ResponseEntity.ok(new MessageResponse("Enrolled successfully in course " + courseId));
   }
 
-  // TODO: Add POST, PUT, DELETE endpoints for course management
+  @PostMapping
+  @PreAuthorize("hasAuthority('course.create')")
+  public ResponseEntity<CourseDto> createCourse(@RequestBody CourseCreationDto courseDto) {
+      CourseDto newCourse = courseService.createCourse(courseDto);
+      return new ResponseEntity<>(newCourse, HttpStatus.CREATED);
+  }
+
+  @PutMapping("/{courseId}")
+  @PreAuthorize("hasAuthority('course.update')")
+  public ResponseEntity<CourseDto> updateCourse(@PathVariable Integer courseId, @RequestBody CourseCreationDto courseDto) {
+      CourseDto updatedCourse = courseService.updateCourse(courseId, courseDto);
+      return ResponseEntity.ok(updatedCourse);
+  }
+
+  @DeleteMapping("/{courseId}")
+  @PreAuthorize("hasAuthority('course.delete')")
+  public ResponseEntity<MessageResponse> deleteCourse(@PathVariable Integer courseId) {
+      courseService.deleteCourse(courseId);
+      return ResponseEntity.ok(new MessageResponse("Course deleted successfully"));
+  }
 }
