@@ -11,11 +11,9 @@ import java.util.Collection;
 import java.util.List;
 
 // User.java
+
 @Entity
 @Table(name = "Users")
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class User {
 
   @Id
@@ -23,125 +21,53 @@ public class User {
   @Column(name = "user_id")
   private Integer userId;
 
-  @Column(unique = true, nullable = false)
-  private String username;
+  @Column(name = "official_id", unique = true, nullable = false)
+  private String officialId; // <--- 關鍵變更
 
   @Column(name = "password_hash", nullable = false)
-  private String passwordHash; // 儲存雜湊後的密碼
+  private String passwordHash;
 
-  @Column(unique = true, nullable = false)
+  // ... 其他欄位
+  // email
+  // role_id
+  // created_at
+//  last_login
+//      is_active
+  @Column(name = "email", unique = true, nullable = false)
   private String email;
-
-  @Column(name = "created_at", updatable = false)
-  private LocalDateTime createdAt;
-
+  @Column(name = "role_id", nullable = false)
+  private Integer roleId;
+  @Column(name = "created_at", nullable = false)
+  private LocalDate createdAt;
   @Column(name = "last_login")
-  private LocalDateTime lastLogin;
+  private LocalDate lastLogin;
+  @Column(name = "is_active", nullable = false)
+  private Boolean isActive;
 
-  @Column(name = "is_active")
-  private boolean isActive;
-
-  @ManyToOne(fetch = FetchType.EAGER) // 登入時通常需要立即知道角色
-  @JoinColumn(name = "role_id", nullable = false)
-  private Role role;
-
-  // --- 這是與 Profile 的雙向關聯 ---
-  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private StudentProfile studentProfile;
-
-  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private TeacherProfile teacherProfile;
-
-  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private AdministratorProfile administratorProfile;
-
-
-  @PrePersist
-  protected void onCreate() {
-    createdAt = LocalDateTime.now();
-    isActive = true;
+  // --- Getters and Setters for officialId ---
+  public String getOfficialId() {
+    return officialId;
   }
 
-// --- Constructors, Getters, and Setters ---
-  public Integer getUserId() {
-    return userId;
+  public void setOfficialId(String officialId) {
+    this.officialId = officialId;
   }
 
-  public void setUserId(Integer userId) {
-    this.userId = userId;
+  // ... 其他 Getters and Setters
+  public Integer getUserId() { return userId; }
+  public void setUserId(Integer userId) { this.userId = userId; }
+  public String getPasswordHash() { return passwordHash; }
+  public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
+  public String getEmail() { return email; }
+  public void setEmail(String email) { this.email = email; }
+  public Integer getRoleId() { return roleId; }
+  public void setRoleId(Integer roleId) { this.roleId = roleId; }
+  public LocalDate getCreatedAt() { return createdAt; }
+  public void setCreatedAt(LocalDate createdAt) { this.createdAt = createdAt;
   }
-
-  public String getUsername() {
-    return username;
+  public LocalDate getLastLogin() { return lastLogin; }
+  public void setLastLogin(LocalDate lastLogin) { this.lastLogin = lastLogin;
   }
-
-  public void setUsername(String username) {
-    this.username = username;
-  }
-
-  public String getPasswordHash() {
-    return passwordHash;
-  }
-
-  public void setPasswordHash(String passwordHash) {
-    this.passwordHash = passwordHash;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public LocalDateTime getLastLogin() {
-    return lastLogin;
-  }
-
-  public void setLastLogin(LocalDateTime lastLogin) {
-    this.lastLogin = lastLogin;
-  }
-
-  public boolean isActive() {
-    return isActive;
-  }
-
-  public void setActive(boolean active) {
-    isActive = active;
-  }
-
-  public Role getRole() {
-    return role;
-  }
-
-  public void setRole(Role role) {
-    this.role = role;
-  }
-  public StudentProfile getStudentProfile() {
-    return studentProfile;
-  }
-  public void setStudentProfile(StudentProfile studentProfile) {
-    this.studentProfile = studentProfile;
-  }
-  public TeacherProfile getTeacherProfile() {
-    return teacherProfile;
-  }
-  public void setTeacherProfile(TeacherProfile teacherProfile) {
-    this.teacherProfile = teacherProfile;
-  }
-  public AdministratorProfile getAdministratorProfile() {
-    return administratorProfile;
-  }
-  public void setAdministratorProfile(AdministratorProfile administratorProfile) {
-    this.administratorProfile = administratorProfile;
-  }
-}
+  public Boolean getIsActive() { return isActive; }
+  public void setIsActive(Boolean isActive) { this.isActive = isActive; }
+  // --- End of Getters and Setters ---

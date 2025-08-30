@@ -23,14 +23,10 @@ public class AdministratorProfile {
   @Column(name = "full_name", nullable = false)
   private String fullName;
 
-  @Column(name = "email", nullable = false)
-  private String email;
-
   // --- Constructors, Getters, and Setters ---
   public AdministratorProfile(User user, String fullName, String email) {
     this.user = user;
     this.fullName = fullName;
-    this.email = email;
   }
 
   public Integer getUserId() { return userId; }
@@ -39,6 +35,4 @@ public class AdministratorProfile {
   public void setUser(User user) { this.user = user; }
   public String getFullName() { return fullName; }
   public void setFullName(String fullName) { this.fullName = fullName; }
-  public String getEmail() { return email; }
-  public void setEmail(String email) { this.email = email; }
 }
