@@ -3,6 +3,7 @@ package edu.fcu.cs1133.service;
 import edu.fcu.cs1133.exception.ResourceNotFoundException;
 import edu.fcu.cs1133.model.StudentProfile;
 import edu.fcu.cs1133.model.User;
+import edu.fcu.cs1133.payload.StudentProfileDto;
 import edu.fcu.cs1133.repository.StudentProfileRepository;
 import edu.fcu.cs1133.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +22,26 @@ public class ProfileService {
     // Add other profile repositories...
 
     @Transactional(readOnly = true)
-    public StudentProfile getStudentProfile(Integer userId) {
-        // First check if user exists
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
-
-        return studentProfileRepository.findById(user.getUserId())
+    public StudentProfileDto getStudentProfile(Integer userId) {
+        StudentProfile profile = studentProfileRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("StudentProfile", "userId", userId));
+        return convertToDto(profile);
+    }
+
+    private StudentProfileDto convertToDto(StudentProfile profile) {
+        StudentProfileDto dto = new StudentProfileDto();
+        User user = profile.getUser(); // This is safe within the transaction
+
+        dto.setUserId(profile.getUserId());
+        dto.setFirstName(profile.getFirstName());
+        dto.setLastName(profile.getLastName());
+        dto.setDateOfBirth(profile.getDateOfBirth());
+
+        if (user != null) {
+            dto.setOfficialId(user.getOfficialId());
+            dto.setEmail(user.getEmail());
+        }
+        return dto;
     }
 
     // TODO: Add methods to get other profiles (Teacher, Admin)

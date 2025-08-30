@@ -1,7 +1,7 @@
 package edu.fcu.cs1133.controller;
 
-import edu.fcu.cs1133.model.StudentProfile;
 import edu.fcu.cs1133.payload.EnrollmentDto;
+import edu.fcu.cs1133.payload.StudentProfileDto;
 import edu.fcu.cs1133.security.UserPrincipal;
 import edu.fcu.cs1133.service.ProfileService;
 import edu.fcu.cs1133.service.StudentService;
@@ -26,9 +26,9 @@ public class StudentController {
   private ProfileService profileService;
 
   @GetMapping("/me/enrollments")
-  @PreAuthorize("hasAuthority('grade.view.own')") // <-- 端點安全：只有擁有 'grade.view.own' 權限的使用者可以訪問
+  @PreAuthorize("hasAuthority('grade.view.own')")
   public ResponseEntity<List<EnrollmentDto>> getMyEnrollments(
-      @AuthenticationPrincipal UserPrincipal currentUser) { // <-- 注入當前登入使用者
+      @AuthenticationPrincipal UserPrincipal currentUser) {
 
     List<EnrollmentDto> enrollments = studentService.getMyEnrollments(currentUser);
     return ResponseEntity.ok(enrollments);
@@ -36,9 +36,9 @@ public class StudentController {
 
   @GetMapping("/me/profile")
   @PreAuthorize("hasAuthority('profile.view.own')")
-  public ResponseEntity<StudentProfile> getMyProfile(
+  public ResponseEntity<StudentProfileDto> getMyProfile(
       @AuthenticationPrincipal UserPrincipal currentUser) {
-    StudentProfile profile = profileService.getStudentProfile(currentUser.getId());
+    StudentProfileDto profile = profileService.getStudentProfile(currentUser.getId());
     return ResponseEntity.ok(profile);
   }
 

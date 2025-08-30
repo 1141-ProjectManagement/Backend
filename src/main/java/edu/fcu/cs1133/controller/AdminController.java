@@ -1,6 +1,6 @@
 package edu.fcu.cs1133.controller;
 
-import edu.fcu.cs1133.model.User;
+import edu.fcu.cs1133.payload.UserDto;
 import edu.fcu.cs1133.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,15 +21,15 @@ public class AdminController {
 
     @GetMapping("/users")
     @PreAuthorize("hasAuthority('student.view') or hasAuthority('teacher.view')") // Example permission
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        List<UserDto> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
     @GetMapping("/users/{userId}")
     @PreAuthorize("hasAuthority('student.view') or hasAuthority('teacher.view')") // Example permission
-    public ResponseEntity<User> getUserById(@PathVariable Integer userId) {
-        User user = userService.getUserById(userId);
+    public ResponseEntity<UserDto> getUserById(@PathVariable Integer userId) {
+        UserDto user = userService.getUserById(userId);
         return ResponseEntity.ok(user);
     }
 
