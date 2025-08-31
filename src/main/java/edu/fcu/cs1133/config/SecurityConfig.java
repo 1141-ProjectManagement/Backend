@@ -62,20 +62,13 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
-        .cors(Customizer.withDefaults()) // <-- 啟用 CORS 並使用預設設定 (會自動尋找 corsConfigurationSource Bean)
-        .csrf(csrf -> csrf.disable()) // 禁用 CSRF，因為我們使用 JWT
-        // .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-                // .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 設置為無狀態 Session
+        .cors(Customizer.withDefaults())
+        .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/auth/**").permitAll() // 允許所有對 /api/auth/** 的請求
-            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // 允許 Swagger
-            .anyRequest().authenticated() // 其他所有請求都需要認證
+            .requestMatchers("/api/auth/**").permitAll()
+            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+            .anyRequest().permitAll() // 暫時允許所有 API 請求，關閉安全驗證
         );
-
-    // 添加我們的自訂 JWT filter
-    // http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
     return http.build();
   }
 }
-

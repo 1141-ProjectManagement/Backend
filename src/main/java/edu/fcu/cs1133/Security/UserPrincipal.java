@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class UserPrincipal implements UserDetails {
 
@@ -24,9 +25,14 @@ public class UserPrincipal implements UserDetails {
   }
 
   public static UserPrincipal create(User user) {
-    Collection<GrantedAuthority> authorities = Collections.singletonList(
-        new SimpleGrantedAuthority("ROLE_" + user.getRole().getRoleName())
-    );
+    // 從 Role 實體中獲取所有關聯的 Permission，並將 permission_name 作為 GrantedAuthority
+    Collection<GrantedAuthority> authorities = user.getRole().getPermissions().stream()
+            .map(permission -> new SimpleGrantedAuthority(permission.getPermissionName()))
+            .collect(Collectors.toSet());
+
+    // 額外加上角色本身作為一個 Authority
+    authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getRoleName()));
+
     return new UserPrincipal(
         user.getUserId(),
         user.getOfficialId(),

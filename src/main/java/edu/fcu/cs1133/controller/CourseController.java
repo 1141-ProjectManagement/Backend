@@ -66,4 +66,12 @@ public class CourseController {
       courseService.deleteCourse(courseId);
       return ResponseEntity.ok(new MessageResponse("Course deleted successfully"));
   }
+
+  @DeleteMapping("/{courseId}/enrollments")
+  public ResponseEntity<MessageResponse> dropEnrollment(@RequestHeader("officialId") String officialId, @PathVariable Integer courseId) {
+    // 取得 userId
+    Integer userId = courseService.getUserIdByOfficialId(officialId);
+    courseService.dropStudentFromCourse(userId, courseId);
+    return ResponseEntity.ok(new MessageResponse("Dropped enrollment for course " + courseId));
+  }
 }

@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class ProfileService {
 
@@ -34,6 +36,20 @@ public class ProfileService {
         return convertToDto(profile);
     }
 
+    @Transactional(readOnly = true)
+    public StudentProfileDto getTeacherProfile(Integer userId) {
+        edu.fcu.cs1133.model.TeacherProfile profile = teacherProfileRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("TeacherProfile", "userId", userId));
+        return convertTeacherToDto(profile);
+    }
+
+    @Transactional(readOnly = true)
+    public StudentProfileDto getAdminProfile(Integer userId) {
+        edu.fcu.cs1133.model.AdministratorProfile profile = administratorProfileRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("AdministratorProfile", "userId", userId));
+        return convertAdminToDto(profile);
+    }
+
     public StudentProfileDto convertToDto(StudentProfile profile) {
         StudentProfileDto dto = new StudentProfileDto();
         User user = profile.getUser(); // This is safe within the transaction
@@ -46,6 +62,62 @@ public class ProfileService {
         if (user != null) {
             dto.setOfficialId(user.getOfficialId());
             dto.setEmail(user.getEmail());
+        }
+        return dto;
+    }
+
+    public StudentProfileDto convertTeacherToDto(edu.fcu.cs1133.model.TeacherProfile profile) {
+        StudentProfileDto dto = new StudentProfileDto();
+        User user = profile.getUser();
+        dto.setUserId(profile.getUserId());
+        if (user != null) {
+            dto.setFirstName(user.getOfficialId());
+            dto.setLastName("");
+            dto.setDateOfBirth(null);
+            dto.setOfficialId(user.getOfficialId());
+            dto.setEmail(user.getEmail());
+            if (user.getRole() != null) {
+                dto.setRole(user.getRole().getRoleName());
+                if (user.getRole().getPermissions() != null) {
+                    dto.setPermissions(user.getRole().getPermissions().stream().map(p -> p.getPermissionName()).toList());
+                }
+            }
+        } else {
+            dto.setFirstName("");
+            dto.setLastName("");
+            dto.setDateOfBirth(null);
+            dto.setOfficialId("");
+            dto.setEmail("");
+            dto.setRole("");
+            dto.setPermissions(List.of());
+        }
+        return dto;
+    }
+
+    public StudentProfileDto convertAdminToDto(edu.fcu.cs1133.model.AdministratorProfile profile) {
+        StudentProfileDto dto = new StudentProfileDto();
+        User user = profile.getUser();
+        dto.setUserId(profile.getUserId());
+        if (user != null) {
+            dto.setFirstName(user.getOfficialId());
+            dto.setLastName("");
+            dto.setDateOfBirth(null);
+            dto.setOfficialId(user.getOfficialId());
+            dto.setEmail(user.getEmail());
+            if (user.getRole() != null) {
+                dto.setRole(user.getRole().getRoleName());
+                if (user.getRole().getPermissions() != null) {
+                    dto.setPermissions(user.getRole().getPermissions().stream().map(p -> p.getPermissionName()).toList());
+                }
+            }
+        } else {
+            dto.setFirstName("");
+            dto.setLastName("");
+            dto.setDateOfBirth(null);
+            dto.setOfficialId("");
+            dto.setEmail("");
+            dto.setRole("");
+            dto.setPermissions(List.of());
         }
         return dto;
     }
@@ -94,5 +166,9 @@ public class ProfileService {
         profile.setFullName(fullName);
 
         administratorProfileRepository.save(profile);
+    }
+
+    public UserRepository getUserRepository() {
+        return userRepository;
     }
 }

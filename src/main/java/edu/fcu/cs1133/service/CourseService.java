@@ -118,6 +118,20 @@ public class CourseService {
       courseRepository.deleteById(courseId);
   }
 
+  @Transactional
+  public Integer getUserIdByOfficialId(String officialId) {
+        User user = userRepository.findByOfficialId(officialId)
+            .orElseThrow(() -> new ResourceNotFoundException("User", "officialId", officialId));
+        return user.getUserId();
+    }
+
+  @Transactional
+  public void dropStudentFromCourse(Integer studentId, Integer courseId) {
+    Enrollment enrollment = enrollmentRepository.findByStudentUserIdAndCourseCourseId(studentId, courseId)
+        .orElseThrow(() -> new ResourceNotFoundException("Enrollment", "studentId/courseId", studentId + "/" + courseId));
+    enrollmentRepository.delete(enrollment);
+  }
+
   private CourseDto convertToDto(Course course) {
       CourseDto dto = new CourseDto();
       dto.setId(course.getCourseId());

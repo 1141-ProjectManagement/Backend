@@ -23,7 +23,7 @@ public class Role {
 
   private String description;
 
-  @ManyToMany(fetch = FetchType.LAZY)
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       name = "Role_Permissions",
       joinColumns = @JoinColumn(name = "role_id"),
