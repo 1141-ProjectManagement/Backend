@@ -60,4 +60,10 @@ public class EnrollmentController {
         enrollmentService.deleteEnrollment(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/student/{studentId}")
+    @PreAuthorize("hasAuthority('STUDENT')")
+    public List<Enrollment> getEnrollmentsByStudentId(@PathVariable int studentId) {
+        return enrollmentService.getEnrollmentsByStudentId(studentId);
+    }
 }
