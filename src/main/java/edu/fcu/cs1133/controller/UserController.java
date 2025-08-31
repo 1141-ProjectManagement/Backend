@@ -53,7 +53,7 @@ public class UserController {
                 case "teacher":
                     return ResponseEntity.ok(profileService.getTeacherProfile(user.getUserId()));
                 case "admin":
-                case "administrator":
+                ca＝se "administrator":
                     return ResponseEntity.ok(profileService.getAdminProfile(user.getUserId()));
                 default:
                     return ResponseEntity.status(404).body(new edu.fcu.cs1133.payload.MessageResponse("Unknown role: " + role));
