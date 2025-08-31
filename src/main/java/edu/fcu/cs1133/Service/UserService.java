@@ -1,10 +1,12 @@
 package edu.fcu.cs1133.service;
 
-import edu.fcu.cs1133.repository.AdministratorProfileRepository;
-import edu.fcu.cs1133.repository.RoleRepository;
-import edu.fcu.cs1133.repository.StudentProfileRepository;
-import edu.fcu.cs1133.repository.TeacherProfileRepository;
-import edu.fcu.cs1133.repository.UserRepository;
+import edu.fcu.cs1133.exception.BadRequestException;
+import edu.fcu.cs1133.exception.ResourceNotFoundException;
+import edu.fcu.cs1133.model.*;
+import edu.fcu.cs1133.payload.ProfileUpdateDto;
+import edu.fcu.cs1133.payload.UserCreationDto;
+import edu.fcu.cs1133.payload.UserDto;
+import edu.fcu.cs1133.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

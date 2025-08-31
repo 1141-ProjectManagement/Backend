@@ -67,4 +67,4 @@
     - [x] 建立 `UserCreationDto.java` 用於建立使用者。
     - [x] 建立 `ProfileUpdateDto.java` 用於更新個人資料。
 - [x] **完善異常處理**：在 `RestExceptionHandler` 中增加對 `AccessDeniedException` 的處理，返回 `403 Forbidden` 狀態碼。
-- [ ] **撰寫測試**：為新的 Service 和 Controller 方法撰寫單元測試與整合測試。
+- [x] **撰寫測試**：為新的 Service 和 Controller 方法撰寫單元測試與整合測試。

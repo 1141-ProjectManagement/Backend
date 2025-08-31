@@ -1,4 +1,4 @@
-package edu.fcu.cs1133.Security;
+package edu.fcu.cs1133.security;
 
 import edu.fcu.cs1133.model.User;
 import edu.fcu.cs1133.repository.UserRepository;

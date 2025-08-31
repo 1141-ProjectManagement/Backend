@@ -23,8 +23,3 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     List<User> findByRole(Role role);
 }
-
-  boolean existsByOfficialId(String officialId); // <--- 建議新增
-
-  boolean existsByEmail(String email);
-}
