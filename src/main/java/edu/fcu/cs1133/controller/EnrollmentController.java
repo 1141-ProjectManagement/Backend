@@ -36,9 +36,12 @@ public class EnrollmentController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('STUDENT')")
-    public Enrollment createEnrollment(@RequestBody Enrollment enrollment) {
-        return enrollmentService.createEnrollment(enrollment);
+    public ResponseEntity<Enrollment> createEnrollment(@RequestBody Enrollment enrollment) {
+        Enrollment result = enrollmentService.createEnrollment(enrollment);
+        if (result == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(result);
     }
 
     // Updating requires the composite key in the body to identify the record
