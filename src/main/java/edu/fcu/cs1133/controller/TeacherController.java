@@ -50,7 +50,6 @@ public class TeacherController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
     public Teacher createTeacher(@RequestBody Teacher teacher) {
         return teacherService.createTeacher(teacher);
     }
@@ -67,7 +66,6 @@ public class TeacherController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteTeacher(@PathVariable int id) {
         teacherService.deleteTeacher(id);
         return ResponseEntity.noContent().build();
