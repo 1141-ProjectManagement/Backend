@@ -20,6 +20,10 @@ public class TeacherService {
     return teachersRepository.findAll();
   }
 
+  public Optional<Teacher> getTeacherById(int id) {
+    return teachersRepository.findById(id);
+  }
+
   public Teacher createTeacher(Teacher teacher) {
     return teachersRepository.save(teacher);
   }
